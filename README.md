@@ -1,1 +1,2 @@
-# SZL_ODLOT
+# wziąłem narkotyk, jaki? nie pamietam..
+ byl za mocny...
