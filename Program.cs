@@ -8,7 +8,7 @@
 
             Console.WriteLine("E2!");
 
-            Console.WriteLine("elo zelo");
+            Console.WriteLine("elo");
         }
     }
 }
