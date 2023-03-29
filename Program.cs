@@ -6,7 +6,7 @@
         {
             Console.WriteLine("Hello, World!");
 
-            Console.WriteLine("Hello, World!");
+            Console.WriteLine("Eli żelo raz 2 czy!");
 
             Console.WriteLine("elo zelo");
         }
