@@ -6,9 +6,9 @@
         {
             Console.WriteLine("Hello, World!");
 
-            Console.WriteLine("E2!");
+            Console.WriteLine("Edsaasd!");
 
-            Console.WriteLine("elo");
+            Console.WriteLine("elo zelo");
         }
     }
 }
