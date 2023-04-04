@@ -33,7 +33,7 @@ namespace ConsoleApp7
                     if (i == aktywnaPozycjaMenu)
                     {
                         Console.BackgroundColor = ConsoleColor.DarkCyan;
-                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.White; 
                         Console.WriteLine("{0,-35}", pozycjeMenu[i]);
                         Console.BackgroundColor = ConsoleColor.Gray;
                         Console.ForegroundColor = ConsoleColor.DarkCyan;
@@ -73,12 +73,32 @@ namespace ConsoleApp7
             {
                 switch (aktywnaPozycjaMenu)
                 {
-                    case 0: Console.Clear(); opcjawBudowie(); break;
-                    case 1: Console.Clear(); opcjawBudowie(); break;
-                    case 2: Console.Clear(); opcjawBudowie(); break;
-                    case 3: Console.Clear(); opcjawBudowie(); break;
-                    case 4: Console.Clear(); opcjawBudowie(); break;
-                    case 5: Environment.Exit(0); break;
+                    case 0: 
+                        Console.Clear(); 
+                        opcjawBudowie();
+                        break;
+                    case 1: 
+                        Console.Clear(); 
+                        opcjawBudowie(); 
+                        break;
+                    case 2: 
+                        Console.Clear(); 
+                        opcjawBudowie(); 
+                        break;
+                    case 3: 
+                        Console.Clear(); 
+                        opcjawBudowie(); 
+                        break;
+                    case 4: 
+                        Console.Clear(); 
+                        opcjawBudowie(); 
+                        break;
+                    case 5: 
+                        Environment.Exit(0); 
+                        break;
+                    default:
+                        Environment.Exit(0);
+                        break;
                 }
             }
             static void opcjawBudowie()
@@ -87,6 +107,13 @@ namespace ConsoleApp7
                 Console.Write("Witam, dzien dobry");
                 Console.ReadKey();
             }
+        }
+    }
+    internal class Program
+    {
+        public static void Main()
+        {
+            Menu.StartMenu();
         }
     }
 }
