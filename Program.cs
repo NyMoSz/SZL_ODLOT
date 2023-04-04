@@ -9,6 +9,8 @@
             Console.WriteLine("Edsaasd!");
 
             Console.WriteLine("elo zelo");
+
+            Console.WriteLine("gajewska");
         }
     }
 }
