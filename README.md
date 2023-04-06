@@ -1,2 +1,2 @@
-# wziąłem narkotyk, jaki? nie pamietam..
- byl za mocny...
+# mam dosc
+ jest 2 a ja nienawidze baz danych i tych kwerend za***anych
