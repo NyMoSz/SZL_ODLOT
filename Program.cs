@@ -25,7 +25,8 @@ namespace ConsoleApp7
         static public bool dobry_password;
         static public int czy_zalogowano_pomyslnie;
         static public bool czy_uzytkownik_zalogowany;
-        static public string[][] trasa_tablica;
+        static public int wiersz;
+        static public string[,] tablica_lotow = new string[3, 6];
 
 
 
@@ -86,22 +87,7 @@ namespace ConsoleApp7
 
                 if (key.Key == ConsoleKey.Enter)
                 {
-                    if (Menu.czy_zalogowano_pomyslnie == 1)
-                    {
-                        Console.WriteLine("\n\nzalogowano pomyslnie");
-                        czy_uzytkownik_zalogowany = true;
-                        Console.ReadKey(true);
-                    }
-                    else if (czy_zalogowano_pomyslnie == 2)
-                    {
-                        Console.WriteLine("\n\nnieprawidlowe haslo");
-                        Console.ReadKey(true);
-                    }
-                    else if (czy_zalogowano_pomyslnie == 3)
-                    {
-                        Console.WriteLine("\n\nnieprawidlowy login");
-                        Console.ReadKey(true);
-                    }
+                    
                     break;
 
                 }
@@ -136,8 +122,21 @@ namespace ConsoleApp7
             }
             else
             {
-                Console.WriteLine("\n\nBledne haslo lub login");
-                Console.ReadKey(true);
+                czy_uzytkownik_zalogowany = false;
+                Console.WriteLine("\n\nBledne haslo lub login\nSproboj ponownie - enter\npowrot - escape");
+                while (true)
+                {
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    if(key.Key == ConsoleKey.Enter)
+                    {
+                        Console.Clear();
+                        Logowanie(conn);
+                    }else if (key.Key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
+                }
+
             }
         }
 
@@ -146,104 +145,44 @@ namespace ConsoleApp7
 
 
 
-        //static public void przegladanie_lotow(MySqlConnection conn)
-        //{
 
-        //    Console.Write("Witam, prosze podac login i haslo");
-        //    Console.ReadKey();
-        //    List<string[]> rows = PobierzDaneZBazy(conn);
-
-        //    // ustalanie liczby wierszy i kolumn w tablicy
-        //    int numRows = rows.Count;
-        //    int numCols = rows[0].Length;
-
-        //    // tworzenie tablicy o odpowiednim rozmiarze
-        //    string[,] table = new string[numRows, numCols];
-
-        //    // przepisywanie danych z listy do tablicy
-        //    for (int i = 0; i < numRows; i++)
-        //    {
-        //        for (int j = 0; j < numCols; j++)
-        //        {
-        //            table[i, j] = rows[i][j];
-        //        }
-        //    }
-
-        //    // wyświetlanie danych z tablicy
-        //    for (int i = 0; i < numRows; i++)
-        //    {
-        //        for (int j = 0; j < numCols; j++)
-        //        {
-        //            Console.Write("{0}\t", table[i, j]);
-        //            Console.ReadKey(true);
-        //        }
-        //        Console.WriteLine();
-        //    }
-        //}
-
-
-
-
-
-
-
-
-
-
-
-
-        //static public List<string[]> PobierzDaneZBazy(MySqlConnection conn)
-        //{
-        //    List<string[]> rows = new List<string[]>();
-
-        //    string selectQuery = "SELECT lotnisko.nazwa, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc FROM trasa, lotnisko, model, samolot WHERE id_lotniska_odlot = lotnisko.id AND id_lotniska_przylot = lotnisko.id AND id_samolotu = samolot.id AND samolot.model = model.id;";
-        //    MySqlCommand command = new MySqlCommand(selectQuery, conn);
-
-        //    conn.Open();
-        //    MySqlDataReader reader = command.ExecuteReader();
-
-        //    while (reader.Read())
-        //    {
-        //        string[] row = new string[reader.FieldCount];
-        //        for (int i = 0; i < reader.FieldCount; i++)
-        //        {
-        //            row[i] = reader[i].ToString();
-        //        }
-        //        rows.Add(row);
-        //    }
-
-        //    reader.Close();
-        //    conn.Close();
-
-        //    return rows;
-        //}
 
         static public void przegladanie_lotow(MySqlConnection conn)
         {
-            Console.WriteLine("dzien dobry");
-            string selectQuery = "SELECT lotniska_odlotowe.nazwa, lotniska_przylotowe.nazwa, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc, trasa.cena FROM lotniska_odlotowe, lotniska_przylotowe, samolot, trasa WHERE lotniska_odlotowe.id = trasa.id_lotniska_odlot AND lotniska_przylotowe.id = trasa.id_lotniska_przylot AND samolot.id = trasa.id_samolotu;";
+            string selectQuery = "SELECT lotniska_odlotowe.nazwa, lotniska_przylotowe.nazwa, trasa.cena, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc FROM lotniska_odlotowe, lotniska_przylotowe, samolot, trasa WHERE lotniska_odlotowe.id = trasa.id_lotniska_odlot AND lotniska_przylotowe.id = trasa.id_lotniska_przylot AND samolot.id = trasa.id_samolotu;";
             MySqlCommand command = new MySqlCommand(selectQuery, conn);
-
-            int wiersz = 0;
-            int kolumna = 0;
-
             conn.Open();
             MySqlDataReader reader = command.ExecuteReader();
+
+
+
+            wiersz = 0;
             while (reader.Read())
             {
-                string nazwa_lotniska_wylot = reader.GetString(0);
-                string nazwa_lotniska_przylot = reader.GetString(1);
-                string samolot_nazwa = reader.GetString(2);
-                string samolot_model = reader.GetString(3);
-                int ilosc_miejsc = reader.GetInt32(4);
-                int cena = reader.GetInt32(5);
+                wiersz++;
+            }
 
-                Console.WriteLine("{0} --> {1} \njuz od {5} PLN\nlot najlepszymi samolotami takimi jak  {3}   {2}\nspiesz sie bo zostalo {4} wolnych miejsc\n\n\n", nazwa_lotniska_wylot, nazwa_lotniska_przylot, samolot_nazwa, samolot_model, ilosc_miejsc, cena);
+
+            reader.Close();
+            reader = command.ExecuteReader();
+
+            int i = 0;
+            while (reader.Read())
+            {
+                tablica_lotow[i, 0] = reader.GetString(0);
+                tablica_lotow[i, 1] = reader.GetString(1);
+                tablica_lotow[i, 2] = reader.GetString(2);
+                tablica_lotow[i, 3] = reader.GetString(3);
+                tablica_lotow[i, 4] = reader.GetString(4);
+                tablica_lotow[i, 5] = reader.GetString(5);
+
+                i++;
 
             }
-            Console.ReadKey(true);
+
             reader.Close();
             conn.Close();
+
         }
 
 
@@ -296,7 +235,8 @@ namespace ConsoleApp7
             MySqlConnection conn = new MySqlConnection(connectionString);
 
 
-
+            Menu.login = "";
+            Menu.password = "";
             bool exit = false;
             int mainMenuChoice = 1;
             while (!exit)
@@ -307,7 +247,7 @@ namespace ConsoleApp7
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.Clear();
-                Console.WriteLine("Witamy na stronie odlotu, oto początek twojej niezapomnianej przygody!");
+                Console.WriteLine("Witamy na stronie odlotu, oto początek twojej niezapomnianej przygody!\n\nUzyj strzalek do poruszania sie, zatwierdz opcje enterem, zatrzymaj program escapem");
                 Console.WriteLine();
                 Console.ForegroundColor = mainMenuChoice == 1 ? ConsoleColor.Green : ConsoleColor.Black;
                 Console.WriteLine("Zalouj sie");
@@ -335,13 +275,20 @@ namespace ConsoleApp7
                         case 1:
                             Console.Clear();
                             Menu.Logowanie(conn);
-                            if(Menu.czy_uzytkownik_zalogowany == true)
+                            if (Menu.czy_uzytkownik_zalogowany == true)
                             {
                                 Console.WriteLine("udalo ci sie");
                                 Console.ReadKey(true);
                             }
 
                             break;
+
+
+
+
+
+
+
                         case 2:
 
                             Console.Clear();
@@ -385,12 +332,104 @@ namespace ConsoleApp7
                             nowy_password = Menu.password_rejestracja;
                             Menu.add_user(conn, nowy_login, nowy_password);
                             break;
+
+
+
+
+
+
                         case 3:
-                            Console.Clear();
-                            Console.BackgroundColor = ConsoleColor.White;
-                            Console.ForegroundColor = ConsoleColor.Black; 
                             Menu.przegladanie_lotow(conn);
+                            bool przegladanie_lotow_nie_zalogowany = true;
+                            int opcja = 1;
+                            
+                            while (przegladanie_lotow_nie_zalogowany)
+                            {
+                                Console.Clear();
+                                
+                                Console.BackgroundColor = ConsoleColor.White;
+                                Console.ForegroundColor = ConsoleColor.Black;
+                                Console.WriteLine("Dostepne loty");
+                                
+
+                                    for (int j = 0; j < Menu.wiersz; j++)
+                                    {
+                                    if (j == opcja)
+                                    {
+                                        Console.BackgroundColor = ConsoleColor.White;
+                                        Console.ForegroundColor = ConsoleColor.Green;
+                                    }
+                                    else
+                                    {
+                                        Console.BackgroundColor = ConsoleColor.White;
+                                        Console.ForegroundColor = ConsoleColor.Black;
+                                    }
+
+                                    for (int k = 0; k < 6; k++)
+                                    {
+                                        if (k == 0)
+                                        {
+                                            Console.Write(Menu.tablica_lotow[j, k] + " --> ");
+
+                                        }
+                                        else if (k == 1)
+                                        {
+                                            Console.Write(Menu.tablica_lotow[j, k]);
+                                        }
+                                        else if (k == 2)
+                                        {
+                                            Console.Write("\nCeny juz od " + Menu.tablica_lotow[j, k] + " PLN");
+                                        }
+                                        else if (k == 3)
+                                        {
+                                            Console.Write("\nLot najlepszymi samolotami takimi jak " + Menu.tablica_lotow[j, k]);
+                                        }
+                                        else if (k == 4)
+                                        {
+                                            Console.Write(" " + Menu.tablica_lotow[j, k]);
+                                        }
+                                        else if (k == 5)
+                                        {
+                                            Console.Write("\nSpiesz sie bo zostalo jeszcze " + Menu.tablica_lotow[j, k] + " miejsc\n\n");
+                                        }
+                                    }
+
+
+                                    }
+
+
+                                ConsoleKeyInfo pryegladanieklucz = Console.ReadKey(true);
+
+                                switch (pryegladanieklucz.Key) 
+                                {
+                                    case ConsoleKey.Escape:
+                                        przegladanie_lotow_nie_zalogowany = false;
+                                        break;
+                                    case ConsoleKey.Enter:
+                                        Console.Clear();
+                                        Console.BackgroundColor = ConsoleColor.White;
+                                        Console.ForegroundColor = ConsoleColor.Black;
+                                        Console.WriteLine("Musisz sie najpierw zalogowac lub zarejestrowac, aby zarezerwowac lot");
+                                        Console.ReadKey(true);
+                                        break;
+                                    case ConsoleKey.UpArrow:
+                                        opcja = (opcja == 0) ? Menu.wiersz - 1 : opcja - 1;
+                                        break;
+                                    case ConsoleKey.DownArrow:
+                                        opcja = (opcja == Menu.wiersz - 1) ? 0 : opcja + 1;
+                                        break;
+                                }
+
+
+
+                            }
                             break;
+
+
+
+
+
+
                         case 4:
                             exit = true;
                             break;
