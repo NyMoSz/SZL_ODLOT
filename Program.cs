@@ -132,7 +132,7 @@ namespace ConsoleApp7
             if (CzyPoprawneLogowanie(login, password, conn) == true)
             {
                 Console.WriteLine("\n\nZalogowano pomyslnie");
-                Console.ReadKey(true);
+                czy_uzytkownik_zalogowany = true;
             }
             else
             {
@@ -221,8 +221,7 @@ namespace ConsoleApp7
         static public void przegladanie_lotow(MySqlConnection conn)
         {
             Console.WriteLine("dzien dobry");
-            //string selectQuery = "SELECT lotnisko.nazwa,lotnisko.nazwa, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc FROM trasa, lotnisko, model, samolot WHERE id_lotniska_odlot = lotnisko.id AND id_lotniska_przylot = lotnisko.id AND id_samolotu = samolot.id AND samolot.model = model.id;";
-            string selectQuery = "SELECT nazwa FROM lotnisko;";
+            string selectQuery = "SELECT lotniska_odlotowe.nazwa, lotniska_przylotowe.nazwa, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc, trasa.cena FROM lotniska_odlotowe, lotniska_przylotowe, samolot, trasa WHERE lotniska_odlotowe.id = trasa.id_lotniska_odlot AND lotniska_przylotowe.id = trasa.id_lotniska_przylot AND samolot.id = trasa.id_samolotu;";
             MySqlCommand command = new MySqlCommand(selectQuery, conn);
 
             int wiersz = 0;
@@ -232,18 +231,17 @@ namespace ConsoleApp7
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                Console.ReadKey(true);
-                string nazwa = reader.GetString(0);
-                //string nazwa_lotniska_wylot = reader.GetString(0);
-                //string nazwa_lotniska_przylot = reader.GetString(1);
-                //string samolot_nazwa = reader.GetString(2);
-                //string samolot_model = reader.GetString(3);
-                //int ilosc_miejsc = reader.GetInt32(4);
-                Console.WriteLine("nazwa lotniska: {0}", nazwa);
+                string nazwa_lotniska_wylot = reader.GetString(0);
+                string nazwa_lotniska_przylot = reader.GetString(1);
+                string samolot_nazwa = reader.GetString(2);
+                string samolot_model = reader.GetString(3);
+                int ilosc_miejsc = reader.GetInt32(4);
+                int cena = reader.GetInt32(5);
 
-                //Console.WriteLine("Wylot: {0}, Przylot: {1}, Nazwa: {2}, Model: {3}, Ilosc miejsc: {4}", nazwa_lotniska_wylot, nazwa_lotniska_przylot, samolot_nazwa, samolot_model, ilosc_miejsc);
-                Console.ReadKey(true);
+                Console.WriteLine("{0} --> {1} \njuz od {5} PLN\nlot najlepszymi samolotami takimi jak  {3}   {2}\nspiesz sie bo zostalo {4} wolnych miejsc\n\n\n", nazwa_lotniska_wylot, nazwa_lotniska_przylot, samolot_nazwa, samolot_model, ilosc_miejsc, cena);
+
             }
+            Console.ReadKey(true);
             reader.Close();
             conn.Close();
         }
@@ -337,6 +335,11 @@ namespace ConsoleApp7
                         case 1:
                             Console.Clear();
                             Menu.Logowanie(conn);
+                            if(Menu.czy_uzytkownik_zalogowany == true)
+                            {
+                                Console.WriteLine("udalo ci sie");
+                                Console.ReadKey(true);
+                            }
 
                             break;
                         case 2:
@@ -384,6 +387,8 @@ namespace ConsoleApp7
                             break;
                         case 3:
                             Console.Clear();
+                            Console.BackgroundColor = ConsoleColor.White;
+                            Console.ForegroundColor = ConsoleColor.Black; 
                             Menu.przegladanie_lotow(conn);
                             break;
                         case 4:
