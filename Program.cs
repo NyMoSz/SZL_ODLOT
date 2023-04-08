@@ -19,6 +19,7 @@ namespace ConsoleApp7
         static public string password_rejestracja = "";
         //static public string login = "";
         //static public string password = "";
+        static public string login_uzytkownika_zalogowanego;
         static public bool czy_dobry_login;
         static public bool czy_dobry_password;
         static public bool dobry_login;
@@ -120,6 +121,7 @@ namespace ConsoleApp7
             {
                 Console.WriteLine("\n\nZalogowano pomyslnie");
                 czy_uzytkownik_zalogowany = true;
+                login_uzytkownika_zalogowanego = login;
             }
             else
             {
@@ -277,8 +279,91 @@ namespace ConsoleApp7
                             Menu.Logowanie(conn);
                             if (Menu.czy_uzytkownik_zalogowany == true)
                             {
-                                Console.WriteLine("udalo ci sie");
-                                Console.ReadKey(true);
+                                Menu.przegladanie_lotow(conn);
+                                Console.Clear();
+                                Console.WriteLine("udalo ci sie " + Menu.login_uzytkownika_zalogowanego);
+                                bool przegladanie_rezerwowanie_zalogowany = true;
+                                int opcja_zalogowany = 1;
+                                
+                                while (przegladanie_rezerwowanie_zalogowany) 
+                                {
+
+
+                                    Console.Clear();
+                                    Console.WriteLine("Dostepne loty - wybierz interesujacy cie lot za pomoca klawisza enter\n\n");
+
+                                    Console.BackgroundColor = ConsoleColor.White;
+                                    Console.ForegroundColor = ConsoleColor.Black;
+
+                                    for (int j = 0; j < Menu.wiersz; j++)
+                                    {
+                                        if (j == opcja_zalogowany)
+                                        {
+                                            Console.BackgroundColor = ConsoleColor.White;
+                                            Console.ForegroundColor = ConsoleColor.Green;
+                                        }
+                                        else
+                                        {
+                                            Console.BackgroundColor = ConsoleColor.White;
+                                            Console.ForegroundColor = ConsoleColor.Black;
+                                        }
+
+                                        for (int k = 0; k < 6; k++)
+                                        {
+                                            if (k == 0)
+                                            {
+                                                Console.Write(Menu.tablica_lotow[j, k] + " --> ");
+
+                                            }
+                                            else if (k == 1)
+                                            {
+                                                Console.Write(Menu.tablica_lotow[j, k]);
+                                            }
+                                            else if (k == 2)
+                                            {
+                                                Console.Write("\nCeny juz od " + Menu.tablica_lotow[j, k] + " PLN");
+                                            }
+                                            else if (k == 3)
+                                            {
+                                                Console.Write("\nLot najlepszymi samolotami takimi jak " + Menu.tablica_lotow[j, k]);
+                                            }
+                                            else if (k == 4)
+                                            {
+                                                Console.Write(" " + Menu.tablica_lotow[j, k]);
+                                            }
+                                            else if (k == 5)
+                                            {
+                                                Console.Write("\nSpiesz sie bo zostalo jeszcze " + Menu.tablica_lotow[j, k] + " miejsc\n\n");
+                                            }
+                                        }
+
+
+                                    }
+
+
+                                    ConsoleKeyInfo pryegladanie_rezerwowanie_klucz = Console.ReadKey(true);
+
+                                    switch (pryegladanie_rezerwowanie_klucz.Key)
+                                    {
+                                        case ConsoleKey.Escape:
+                                            przegladanie_rezerwowanie_zalogowany = false;
+                                            break;
+                                        case ConsoleKey.Enter:
+                                            Console.Clear();
+                                            Console.BackgroundColor = ConsoleColor.White;
+                                            Console.ForegroundColor = ConsoleColor.Black;
+                                            Console.WriteLine("chuj dziala");
+                                            Console.ReadKey(true);
+                                            break;
+                                        case ConsoleKey.UpArrow:
+                                            opcja_zalogowany = (opcja_zalogowany == 0) ? Menu.wiersz - 1 : opcja_zalogowany - 1;
+                                            break;
+                                        case ConsoleKey.DownArrow:
+                                            opcja_zalogowany = (opcja_zalogowany == Menu.wiersz - 1) ? 0 : opcja_zalogowany + 1;
+                                            break;
+                                    }
+                                }
+
                             }
 
                             break;
@@ -349,7 +434,7 @@ namespace ConsoleApp7
                                 
                                 Console.BackgroundColor = ConsoleColor.White;
                                 Console.ForegroundColor = ConsoleColor.Black;
-                                Console.WriteLine("Dostepne loty");
+                                Console.WriteLine("Dostepne loty\n\n");
                                 
 
                                     for (int j = 0; j < Menu.wiersz; j++)
