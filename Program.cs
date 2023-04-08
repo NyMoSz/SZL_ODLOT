@@ -17,8 +17,8 @@ namespace ConsoleApp7
 
         static public string login_rejestracja = "";
         static public string password_rejestracja = "";
-        static public string login = "";
-        static public string password = "";
+        //static public string login = "";
+        //static public string password = "";
         static public bool czy_dobry_login;
         static public bool czy_dobry_password;
         static public bool dobry_login;
@@ -38,7 +38,7 @@ namespace ConsoleApp7
 
 
 
-        static bool CzyPoprawneLogowanie(string login, string password, MySqlConnection conn)
+        static public bool CzyPoprawneLogowanie(string login, string password, MySqlConnection conn)
         {
             string selectQuery = "SELECT Password FROM user WHERE login = @login";
             MySqlCommand command = new MySqlCommand(selectQuery, conn);
@@ -75,7 +75,8 @@ namespace ConsoleApp7
 
             Console.Write("Witam, prosze podac login i haslo, aby uzyskać dostęp do rezerwowania lotów\n");
             Console.WriteLine("login:  ");
-            login = Console.ReadLine();
+            string login = Console.ReadLine();
+            string password ="";
 
 
             Console.WriteLine("haslo:  ");
@@ -235,8 +236,7 @@ namespace ConsoleApp7
             MySqlConnection conn = new MySqlConnection(connectionString);
 
 
-            Menu.login = "";
-            Menu.password = "";
+
             bool exit = false;
             int mainMenuChoice = 1;
             while (!exit)
