@@ -150,7 +150,7 @@ namespace ConsoleApp7
 
         static public void przegladanie_lotow(MySqlConnection conn)
         {
-            string selectQuery = "SELECT lotniska_odlotowe.nazwa, lotniska_przylotowe.nazwa, trasa.cena, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc FROM lotniska_odlotowe, lotniska_przylotowe, samolot, trasa WHERE lotniska_odlotowe.id = trasa.id_lotniska_odlot AND lotniska_przylotowe.id = trasa.id_lotniska_przylot AND samolot.id = trasa.id_samolotu;";
+            string selectQuery = "SELECT lotniska_odlotowe.nazwa, lotniska_przylotowe.nazwa, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc, trasa.cena FROM lotniska_odlotowe JOIN lotniska_przylotowe JOIN samolot JOIN trasa ON lotniska_odlotowe.id = trasa.id_lotniska_odlot AND lotniska_przylotowe.id = trasa.id_lotniska_przylot AND samolot.id = trasa.id_samolotu;";
             MySqlCommand command = new MySqlCommand(selectQuery, conn);
             conn.Open();
             MySqlDataReader reader = command.ExecuteReader();
@@ -172,10 +172,10 @@ namespace ConsoleApp7
             {
                 tablica_lotow[i, 0] = reader.GetString(0);
                 tablica_lotow[i, 1] = reader.GetString(1);
-                tablica_lotow[i, 2] = reader.GetString(2);
+                tablica_lotow[i, 2] = reader.GetString(5);
                 tablica_lotow[i, 3] = reader.GetString(3);
-                tablica_lotow[i, 4] = reader.GetString(4);
-                tablica_lotow[i, 5] = reader.GetString(5);
+                tablica_lotow[i, 4] = reader.GetString(2);
+                tablica_lotow[i, 5] = reader.GetString(4);
 
                 i++;
 
