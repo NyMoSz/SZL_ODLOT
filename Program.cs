@@ -252,27 +252,21 @@ namespace ConsoleApp7
             conn.Close();
             Console.WriteLine("{0} wiersz dodany do tabeli.", rowsAffected);
         }
-        
-        //static public void pomocy(MySqlConnection conn, string login)
-        //{
-        //    string selectQuery = "SELECT id FROM user WHERE login = @login;";
-        //    MySqlCommand command = new MySqlCommand(selectQuery, conn);
-        //    command.Parameters.AddWithValue("@login", login);
-        //    conn.Open();
-        //    MySqlDataReader reader = command.ExecuteReader();
-        //    reader.Read();
-        //    int ID_user = reader.GetInt32(0);
-        //    id_user = ID_user;
-        //    reader.Close();
-        //    conn.Close();
-        //}
+
         static public void pokaz_lot_uzytkownika(MySqlConnection conn, string login)
         {
 
+            string selectQuery = "SELECT id FROM user WHERE login = @login;";
+            MySqlCommand command = new MySqlCommand(selectQuery, conn);
+            command.Parameters.AddWithValue("@login", login);
             conn.Open();
-            string selectQuery2 = "SELECT DISTINCT ilosc_biletow, lotniska_odlotowe.nazwa, lotniska_przylotowe.nazwa, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc, trasa.ilosc_miejsc, trasa.cena FROM lotniska_odlotowe JOIN user JOIN user_trasa JOIN lotniska_przylotowe JOIN samolot JOIN trasa ON lotniska_odlotowe.id = trasa.id_lotniska_odlot AND lotniska_przylotowe.id = trasa.id_lotniska_przylot AND samolot.id = trasa.id_samolotu AND ID_user = 1 AND ID_trasa = trasa.id;";
+            MySqlDataReader reader = command.ExecuteReader();
+            reader.Read();
+            string id_user = reader.GetString(0);
+            reader.Close();
+            string selectQuery2 = "SELECT DISTINCT ilosc_biletow, lotniska_odlotowe.nazwa, lotniska_przylotowe.nazwa, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc, trasa.ilosc_miejsc, trasa.cena FROM lotniska_odlotowe JOIN user JOIN user_trasa JOIN lotniska_przylotowe JOIN samolot JOIN trasa ON lotniska_odlotowe.id = trasa.id_lotniska_odlot AND lotniska_przylotowe.id = trasa.id_lotniska_przylot AND samolot.id = trasa.id_samolotu AND ID_user = @id_user AND ID_trasa = trasa.id;";
             MySqlCommand command2 = new MySqlCommand( selectQuery2, conn);
-   
+            command2.Parameters.AddWithValue("@id_user", id_user);
             MySqlDataReader reader2 = command2.ExecuteReader();
             reader2.Read();
             wiersz2 = 0;
@@ -291,6 +285,7 @@ namespace ConsoleApp7
                 tablica_twoje_loty[i, 5] = reader2.GetString(5);
                 tablica_twoje_loty[i, 6] = reader2.GetString(6);
                 tablica_twoje_loty[i, 7] = reader2.GetString(7);
+                Console.ReadKey(true);
 
                 i++;
 
@@ -405,7 +400,6 @@ namespace ConsoleApp7
                                         {
                                             case 4:
                                                 {
-                                                    //Menu.pomocy(conn, Menu.login_uzytkownika_zalogowanego);
                                                     Menu.pokaz_lot_uzytkownika(conn, Menu.login_uzytkownika_zalogowanego);
                                                     while (elozelo != false)
                                                     {
