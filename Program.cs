@@ -685,6 +685,7 @@ namespace ConsoleApp7
                                 }
 
 
+
                                 ConsoleKeyInfo pryegladanieklucz = Console.ReadKey(true);
 
                                 switch (pryegladanieklucz.Key)
