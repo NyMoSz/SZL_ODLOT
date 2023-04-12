@@ -30,7 +30,7 @@ namespace ConsoleApp7
         static public bool czy_uzytkownik_zalogowany;
         static public int wiersz;
         static public int wiersz2;
-        static public string[,] tablica_lotow = new string[999, 7];
+        static public string[,] tablica_lotow = new string[999, 8];
         static public string[,] tablica_twoje_loty = new string[999, 8];
         static public int id_user;
 
@@ -158,7 +158,7 @@ namespace ConsoleApp7
 
         static public void przegladanie_lotow(MySqlConnection conn)
         {
-            string selectQuery = "SELECT lotniska_odlotowe.nazwa, lotniska_przylotowe.nazwa, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc, trasa.ilosc_miejsc, trasa.cena FROM lotniska_odlotowe JOIN lotniska_przylotowe JOIN samolot JOIN trasa ON lotniska_odlotowe.id = trasa.id_lotniska_odlot AND lotniska_przylotowe.id = trasa.id_lotniska_przylot AND samolot.id = trasa.id_samolotu;";
+            string selectQuery = "SELECT lotniska_odlotowe.nazwa, lotniska_przylotowe.nazwa, samolot.nazwa, samolot.model, samolot.ilosc_max_miejsc, trasa.ilosc_miejsc, trasa.cena, trasa.id FROM lotniska_odlotowe JOIN lotniska_przylotowe JOIN samolot JOIN trasa ON lotniska_odlotowe.id = trasa.id_lotniska_odlot AND lotniska_przylotowe.id = trasa.id_lotniska_przylot AND samolot.id = trasa.id_samolotu;";
             MySqlCommand command = new MySqlCommand(selectQuery, conn);
             conn.Open();
             MySqlDataReader reader = command.ExecuteReader();
@@ -178,6 +178,7 @@ namespace ConsoleApp7
             int i = 0;
             while (reader.Read())
             {
+                
                 tablica_lotow[i, 0] = reader.GetString(0);
                 tablica_lotow[i, 1] = reader.GetString(1);
                 tablica_lotow[i, 2] = reader.GetString(6);
@@ -185,6 +186,7 @@ namespace ConsoleApp7
                 tablica_lotow[i, 4] = reader.GetString(2);
                 tablica_lotow[i, 5] = reader.GetString(5);
                 tablica_lotow[i, 6] = reader.GetString(4);
+                tablica_lotow[i, 7] = reader.GetString(7);
 
                 i++;
 
@@ -237,7 +239,7 @@ namespace ConsoleApp7
             reader.Close();
             Console.Write("Witam w okienku rezerwacji lotow \n\nProszę podać ilość biletów jaka państwa interesuje: ");
             int ilosc_biletow = int.Parse(Console.ReadLine());
-
+            
             string selectQuery2 = "INSERT INTO user_trasa (ID_trasa, ID_user, ilosc_biletow) VALUES (@ID_trasa, @ID_user, @ilosc_biletow);";
             MySqlCommand command2 = new MySqlCommand(selectQuery2, conn);
             command2.Parameters.AddWithValue("@ID_trasa", ID_trasa);
@@ -376,7 +378,7 @@ namespace ConsoleApp7
                                     Console.BackgroundColor = ConsoleColor.White;
                                     Console.ForegroundColor = ConsoleColor.Black;
                                     Menu.przegladanie_lotow(conn);
-                                    Menu.przegladanie_lotow(conn);
+                                    
                                     
                                     Console.WriteLine("Dostepne loty - wybierz interesujacy cie lot za pomoca klawisza enter\n\n");
                                     Console.Write("");
