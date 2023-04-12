@@ -285,7 +285,6 @@ namespace ConsoleApp7
                 tablica_twoje_loty[i, 5] = reader2.GetString(5);
                 tablica_twoje_loty[i, 6] = reader2.GetString(6);
                 tablica_twoje_loty[i, 7] = reader2.GetString(7);
-                Console.ReadKey(true);
 
                 i++;
 
