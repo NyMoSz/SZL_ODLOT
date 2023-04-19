@@ -243,28 +243,36 @@ namespace ConsoleApp7
             reader.Close();
             string selectQuery4 = "SELECT ilosc_miejsc FROM trasa where id = @ID_trasa;";
             MySqlCommand command4 = new MySqlCommand(selectQuery4, conn);
-            command4.Parameters.AddWithValue("@id", ID_trasa);
-            MySqlDataReader reader2 = command.ExecuteReader();
+            command4.Parameters.AddWithValue("@ID_trasa", ID_trasa);
+            MySqlDataReader reader2 = command4.ExecuteReader();
             reader2.Read();
-            string ilosc_miejsc = reader2.GetString(0);
+            int ilosc_miejsc = reader2.GetInt32(0);
             reader2.Close();
-            Console.WriteLine(ilosc_miejsc);
             Console.Write("Witam w okienku rezerwacji lotow \n\nProszę podać ilość biletów jaka państwa interesuje: ");
             int ilosc_biletow = int.Parse(Console.ReadLine());
+            if (ilosc_biletow > ilosc_miejsc)
+            {
+                Console.WriteLine("Nie mozna zarezerwowac wiekszej ilosci miejsc niz jest dostepnie. Maksymalna ilosc obecnych miejsc: " + ilosc_miejsc);
+                conn.Close();
+            }
+            else
+            {
+                string selectQuery2 = "INSERT INTO user_trasa (ID_trasa, ID_user, ilosc_biletow) VALUES (@ID_trasa, @ID_user, @ilosc_biletow);";
+                MySqlCommand command2 = new MySqlCommand(selectQuery2, conn);
+                command2.Parameters.AddWithValue("@ID_trasa", ID_trasa);
+                command2.Parameters.AddWithValue("@ID_user", ID_user);
+                command2.Parameters.AddWithValue("@ilosc_biletow", ilosc_biletow);
 
-            string selectQuery2 = "INSERT INTO user_trasa (ID_trasa, ID_user, ilosc_biletow) VALUES (@ID_trasa, @ID_user, @ilosc_biletow);";
-            MySqlCommand command2 = new MySqlCommand(selectQuery2, conn);
-            command2.Parameters.AddWithValue("@ID_trasa", ID_trasa);
-            command2.Parameters.AddWithValue("@ID_user", ID_user);
-            command2.Parameters.AddWithValue("@ilosc_biletow", ilosc_biletow);
-            string selectQuery3 = "UPDATE trasa SET ilosc_miejsc = ilosc_miejsc - @ilosc_biletow WHERE trasa.id = @ID_trasa;";
-            MySqlCommand command3 = new MySqlCommand(selectQuery3, conn);
-            command3.Parameters.AddWithValue("@ilosc_biletow", ilosc_biletow);
-            command3.Parameters.AddWithValue("@ID_trasa", ID_trasa);
-            command3.ExecuteNonQuery();
-            int rowsAffected = command2.ExecuteNonQuery();
-            conn.Close();
-            Console.WriteLine("{0} wiersz dodany do tabeli.", rowsAffected);
+                string selectQuery3 = "UPDATE trasa SET ilosc_miejsc = ilosc_miejsc - @ilosc_biletow WHERE trasa.id = @ID_trasa;";
+
+                MySqlCommand command3 = new MySqlCommand(selectQuery3, conn);
+                command3.Parameters.AddWithValue("@ilosc_biletow", ilosc_biletow);
+                command3.Parameters.AddWithValue("@ID_trasa", ID_trasa);
+                command3.ExecuteNonQuery();
+                int rowsAffected = command2.ExecuteNonQuery();
+                conn.Close();
+                Console.WriteLine("{0} wiersz dodany do tabeli.", rowsAffected);
+            }
         }
 
         static public void pokaz_lot_uzytkownika(MySqlConnection conn, string login)
@@ -348,6 +356,23 @@ namespace ConsoleApp7
             conn.Close();
 
             //Console.WriteLine("{0} wiersz dodany do tabeli.", rowsAffected);
+        }
+
+        static public void dodawanie_samolotu(MySqlConnection conn,string nazwa, string model, int ilosc_max_miejsc)
+        {
+            string selectQuery = $"INSERT INTO samolot (nazwa, model, ilosc_max_miejsc) VALUES ({"@nazwa"}, {"@model"}, {"@ilosc_max_miejsc"});";
+            MySqlCommand command = new MySqlCommand(selectQuery, conn);
+            conn.Open();
+            command.Parameters.AddWithValue("@nazwa",nazwa);
+            command.Parameters.AddWithValue("@model", model);
+            command.Parameters.AddWithValue("@ilosc_max_miejsc", ilosc_max_miejsc);
+            Console.WriteLine(model);
+            MySqlDataReader reader = command.ExecuteReader();
+            reader.Read();
+
+            reader.Close();
+
+            conn.Close();
         }
     }
 
@@ -633,19 +658,24 @@ namespace ConsoleApp7
                                         Console.WriteLine();
                                         Console.ForegroundColor = admin_choice == 1 ? ConsoleColor.Green : ConsoleColor.Black;
                                         Console.WriteLine("dodaj lotniska");
+                                        Console.ForegroundColor = admin_choice == 2 ? ConsoleColor.Green : ConsoleColor.Black;
+                                        Console.WriteLine("dodaj samolot");
+                                        Console.ForegroundColor = admin_choice == 3 ? ConsoleColor.Green : ConsoleColor.Black;
+                                        Console.WriteLine("");
+
                                         ConsoleKeyInfo adminKey = Console.ReadKey();
                                         if (adminKey.Key == ConsoleKey.UpArrow)
                                         {
-                                            mainMenuChoice = Math.Max(1, mainMenuChoice - 1);
+                                            admin_choice = Math.Max(1, admin_choice - 1);
                                         }
                                         else if (adminKey.Key == ConsoleKey.DownArrow)
                                         {
-                                            mainMenuChoice = Math.Min(3, mainMenuChoice + 1);
+                                            admin_choice = Math.Min(3, admin_choice + 1);
                                         }
                                         else if (adminKey.Key == ConsoleKey.Escape)
                                         {
                                             exit2 = true;
-                                            Environment.Exit(0);
+                                            
                                         }
                                         else if (adminKey.Key == ConsoleKey.Enter)
                                         {
@@ -653,6 +683,8 @@ namespace ConsoleApp7
                                             {
                                                 case 1:
                                                     Console.Clear();
+                                                    Console.BackgroundColor = ConsoleColor.White;
+                                                    Console.ForegroundColor = ConsoleColor.Black;
                                                     Console.Write("podaj nazwe lotniska: ");
                                                     string nazwa_lotniska = Console.ReadLine();
 
@@ -661,7 +693,20 @@ namespace ConsoleApp7
                                                     Console.ReadKey(true);
 
                                                     break;
-                                            }
+                                                case 2:
+                                                    Console.Clear();
+                                                    Console.BackgroundColor = ConsoleColor.White;
+                                                    Console.ForegroundColor = ConsoleColor.Black;
+                                                    Console.Write("podaj nazwe samolotu: ");
+                                                    string nazwa_samolotu = Console.ReadLine();
+                                                    Console.Write("podaj nazwe modelu samolotu: ");
+                                                    string nazwa_modelu = Console.ReadLine();
+                                                    Console.Write("podaj maksymalną ilosc miejsc: ");
+                                                    int ilosc_max_miejsc = Int32.Parse(Console.ReadLine());
+                                                    Menu.dodawanie_samolotu(conn, nazwa_samolotu, nazwa_modelu, ilosc_max_miejsc);
+                                                    break;
+
+                                            }   
 
                                         }
                                     }
